@@ -8,6 +8,7 @@ setuptools.setup(
     license="MIT",
     python_requires=">=3.6",
     install_requires=[
+        'lxml',
     ],
     entry_points=dict(
         console_scripts=[
