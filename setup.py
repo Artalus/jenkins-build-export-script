@@ -9,6 +9,7 @@ setuptools.setup(
     python_requires=">=3.6",
     install_requires=[
         'lxml',
+        'meiga',
     ],
     entry_points=dict(
         console_scripts=[
