@@ -20,6 +20,10 @@ setuptools.setup(
         'dev': [
             'httpie',
             'mypy',
+            'lxml-stubs',
+        ],
+        'test': [
+            'pytest'
         ],
     }
 )

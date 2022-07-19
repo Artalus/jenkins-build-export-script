@@ -19,7 +19,16 @@ def parse_args() -> Args:
 
 def main(args: Args) -> None:
     print(f'build_dir: {args.build_dir.absolute()}')
-    print(read_all_workflow_files(args.build_dir))
+    xmls = read_all_workflow_files(args.build_dir)
+    for x in xmls:
+        print(f'--- {x.xpath("/Tag/node/id/text()")[0]}')
+        actions = x.xpath('/Tag/actions/*')
+        for a in actions:
+            print(f'* {a.tag}')
+            for kv in a:
+                k = kv.tag
+                v = kv.text
+                print(f'{k}={v}')
 
 
 def main2() -> None:
