@@ -1,8 +1,9 @@
 from pathlib import Path
-from typing import Any, Dict, List, Literal, NamedTuple, Union
+from typing import Any, Dict, Iterable, List, Literal, NamedTuple, Union, cast
 
 import lxml.etree as ET
 from lxml.etree import _ElementTree as XMLT, _Element as XML
+
 
 def read_all_workflow_files(build_dir: Path) -> List[XMLT]:
     result = []
@@ -20,10 +21,16 @@ class ActionData(NamedTuple):
         tag: str = elem.tag
         clazz = tag.split('.')[-1]
 
+        if clazz == 'ArgumentsActionImpl':
+            entries = cast(List[XML], elem.xpath('./arguments/entry'))
+            data = arguments_entries_to_dict(entries)
+        else:
+            data = elem2dict(elem)
+
         return ActionData(
             type=clazz,
             fulltype=tag,
-            data=elem2dict(elem),
+            data=data,
         )
 
 NodeType = Literal[
@@ -34,6 +41,25 @@ NodeType = Literal[
     'StepStart',
     'StepEnd',
 ]
+
+class NodeXml(NamedTuple):
+    id: str
+    type: str
+    parents: List[str]
+    actions: List[ActionData]
+
+    @staticmethod
+    def from_xml(e: XML) -> 'NodeXml':
+        clazz = cast(List[str], e.xpath('/Tag/node/@class'))[0]
+        idd = cast(List[str], e.xpath('/Tag/node/id/text()'))
+        return NodeXml(
+            id=idd[0],
+            type=clazz.split('.')[-1],
+            parents=e.xpath('/Tag/node/parentIds/*/text()'),
+            actions=[ActionData.from_xml(x) for x in e.xpath('/Tag/actions/*')],
+        )
+        # parents =
+
 
 
 # (c) pieterdd https://gist.github.com/jacobian/795571?permalink_comment_id=2810160#gistcomment-2810160
@@ -53,4 +79,14 @@ def elem2dict(node: XML) -> Dict[str, Any]:
         else:
             result[key] = elem2dict(element)
 
+    return result
+
+def arguments_entries_to_dict(entries: Iterable[XML]) -> Dict[str, str]:
+    result = dict()
+    for e in entries:
+        strings = cast(List[XML], e.xpath('./string'))
+        k, v = strings
+        assert k.text
+        assert v.text
+        result[k.text] = v.text
     return result
