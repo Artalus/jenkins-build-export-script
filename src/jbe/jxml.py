@@ -53,6 +53,7 @@ class NodeXml(NamedTuple):
     parents: List[str]
     actions: List[ActionData]
     start_id: Optional[str]
+    # TODO: add descriptor???
 
     @staticmethod
     def from_xml(e: XML) -> 'NodeXml':
@@ -94,6 +95,7 @@ def elem2dict(node: XML) -> Dict[str, Any]:
 def arguments_entries_to_dict(entries: Iterable[XML]) -> Dict[str, str]:
     """
     For <ArgumentsActionImpl>, converts its <arguments> list into a simple arg=value dictionary
+    FIXME: DOES NOT WORK for anything other than simple string+string entries
     """
     result = dict()
     for e in entries:
