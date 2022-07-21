@@ -1,5 +1,5 @@
 from pathlib import Path
-from typing import Any, Dict, Iterable, List, Literal, NamedTuple, Union, cast
+from typing import Any, Dict, Iterable, List, Literal, NamedTuple, Optional, Union, cast
 
 import lxml.etree as ET
 from lxml.etree import _ElementTree as XMLT, _Element as XML
@@ -33,30 +33,26 @@ class ActionData(NamedTuple):
             data=data,
         )
 
-NodeType = Literal[
-    'Unknown',
-    'FlowStart',
-    'FlowEnd',
-    'StepAtom',
-    'StepStart',
-    'StepEnd',
-]
-
 class NodeXml(NamedTuple):
     id: str
     type: str
     parents: List[str]
     actions: List[ActionData]
+    start_id: Optional[str]
 
     @staticmethod
     def from_xml(e: XML) -> 'NodeXml':
         clazz = cast(List[str], e.xpath('/Tag/node/@class'))[0]
         idd = cast(List[str], e.xpath('/Tag/node/id/text()'))
+        parents = cast(List[str], e.xpath('/Tag/node/parentIds/*/text()'))
+        actions = cast(List[XML], e.xpath('/Tag/actions/*'))
+        start_id = cast(List[str], e.xpath('/Tag/node/startId/text()'))
         return NodeXml(
             id=idd[0],
             type=clazz.split('.')[-1],
-            parents=e.xpath('/Tag/node/parentIds/*/text()'),
-            actions=[ActionData.from_xml(x) for x in e.xpath('/Tag/actions/*')],
+            parents=parents,
+            actions=[ActionData.from_xml(x) for x in actions],
+            start_id = start_id[0] if start_id else None,
         )
         # parents =
 

@@ -29,6 +29,7 @@ def test_node_from_xml() -> None:
     assert nd.id == '15'
     assert nd.parents == ['13']
     assert nd.type == 'StepAtomNode'
+    assert nd.start_id is None
     assert sorted(nd.actions) == sorted([
         ActionData(
             type='ArgumentsActionImpl',
