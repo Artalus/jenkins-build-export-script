@@ -1,3 +1,9 @@
+"""
+Describes classes used for typization of FlowNode objects, serialized by Jenkins
+into `workflolw/#.xml`. Mainly used to be able to test that xml contents are
+parsed as they are meant to be.
+
+"""
 from pathlib import Path
 from typing import Any, Dict, Iterable, List, Literal, NamedTuple, Optional, Union, cast
 
@@ -12,6 +18,9 @@ def read_all_workflow_files(build_dir: Path) -> List[XMLT]:
     return result
 
 class ActionData(NamedTuple):
+    """
+    Describes entries in <actions>...</actions> block of single FlowNode XML
+    """
     type: str
     fulltype: str
     data: Any
@@ -34,6 +43,11 @@ class ActionData(NamedTuple):
         )
 
 class NodeXml(NamedTuple):
+    """
+    Describes whole <Tag> object from serialized FlowNode xml - but nothing
+    more than xml contents. Leaves depth calculation and other JSON representaion
+    compatibility for higher abstraction levels
+    """
     id: str
     type: str
     parents: List[str]
@@ -78,6 +92,9 @@ def elem2dict(node: XML) -> Dict[str, Any]:
     return result
 
 def arguments_entries_to_dict(entries: Iterable[XML]) -> Dict[str, str]:
+    """
+    For <ArgumentsActionImpl>, converts its <arguments> list into a simple arg=value dictionary
+    """
     result = dict()
     for e in entries:
         strings = cast(List[XML], e.xpath('./string'))
