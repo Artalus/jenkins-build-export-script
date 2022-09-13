@@ -17,7 +17,7 @@ def test_action_data_from_xml() -> None:
 
     ad = ads[0]
     assert ad.type == 'TimingAction'
-    assert ad.fulltype == 'wf.a.TimingAction'
+    assert ad.fullType == 'wf.a.TimingAction'
     assert ad.data == dict(startTime='1658432251468')
 
 
@@ -33,19 +33,19 @@ def test_node_from_xml() -> None:
     assert sorted(nd.actions) == sorted([
         ActionData(
             type='ArgumentsActionImpl',
-            fulltype='cps.a.ArgumentsActionImpl',
+            fullType='cps.a.ArgumentsActionImpl',
             data=dict(
                 message='${PASSWORD}'
             )
         ),
         ActionData(
             type='LogStorageAction',
-            fulltype='s.a.LogStorageAction',
+            fullType='s.a.LogStorageAction',
             data={}
         ),
         ActionData(
             type='TimingAction',
-            fulltype='wf.a.TimingAction',
+            fullType='wf.a.TimingAction',
             data=dict(
                 startTime='1658432889682'
             )

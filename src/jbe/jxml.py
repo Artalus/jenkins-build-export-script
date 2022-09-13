@@ -22,7 +22,7 @@ class ActionData(NamedTuple):
     Describes entries in <actions>...</actions> block of single FlowNode XML
     """
     type: str
-    fulltype: str
+    fullType: str
     data: Any
 
     @staticmethod
@@ -38,7 +38,7 @@ class ActionData(NamedTuple):
 
         return ActionData(
             type=clazz,
-            fulltype=tag,
+            fullType=tag,
             data=data,
         )
 
