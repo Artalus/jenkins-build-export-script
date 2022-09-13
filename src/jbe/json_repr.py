@@ -20,6 +20,11 @@ class NodeData(NamedTuple):
     startNode: Optional[str]
     actions: List[ActionData]
 
+    def to_json(self):
+        j = self._asdict()
+        j['actions'] = [a._asdict() for a in self.actions]
+        return j
+
     @staticmethod
     def from_xml(this: NodeXml, everything: Dict[str, NodeXml]) -> 'NodeData':
         enclosings = NodeData.extract_enclosings(this, everything)

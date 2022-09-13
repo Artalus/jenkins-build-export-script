@@ -10,6 +10,7 @@ setuptools.setup(
     install_requires=[
         'lxml',
         'meiga',
+        'requests',
     ],
     entry_points=dict(
         console_scripts=[
